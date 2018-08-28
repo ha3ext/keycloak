@@ -173,7 +173,7 @@ public class GroupPolicyProviderFactory implements PolicyProviderFactory<GroupPo
 
             if (group == null) {
                 String path = definition.getPath();
-                String canonicalPath = path.startsWith("/") ? path.substring(1, path.length()) : path;
+                String canonicalPath = getCanonicalPath(path);
 
                 if (canonicalPath != null) {
                     String[] parts = canonicalPath.split("/");
@@ -213,5 +213,10 @@ public class GroupPolicyProviderFactory implements PolicyProviderFactory<GroupPo
 
     private HashSet<GroupPolicyRepresentation.GroupDefinition> getGroupsDefinition(Map<String, String> config) throws IOException {
         return new HashSet<>(Arrays.asList(JsonSerialization.readValue(config.get("groups"), GroupPolicyRepresentation.GroupDefinition[].class)));
+    }
+
+    private String getCanonicalPath(String path) {
+        String root = "/";
+        return  path == null ? null : root.equals(path) ? root : path.startsWith(root) ? path.substring(1) : path;
     }
 }
